@@ -25,6 +25,9 @@ class Monster(Resource):
         
         if not name or not description:
             return {"message": "Name and description are required!"}, 400
+        existing_monster = mongo.db.monsters.find_one({"name": name})
+        if existing_monster:
+            return {"message": "Monster with this name already exists!"}, 400
         
         # Insert monster into the database with a custom "id"
         monster = {
