@@ -37,7 +37,7 @@ def test_create_monster_without_name(client, mock_mongo):
         "type": "Test Type"
     })
     assert response.status_code == 400
-    assert response.json['message'] == "Name and description are required!"
+    assert response.json['message'] == "Name and description are required fields"
 
 #3 Test POST for /monsters with missing description
 def test_create_missing_description(client, mock_mongo):
@@ -47,13 +47,13 @@ def test_create_missing_description(client, mock_mongo):
         "type": "Test Type"
     })
     assert response.status_code == 400
-    assert response.json['message'] == "Name and description are required!"
+    assert response.json['message'] == "Name and description are required fields"
 
 #4 Test POST for /monsters with invalid data
 def test_create_invalid_id(client, mock_mongo):
     response = client.post('/monsters', json={})
     assert response.status_code == 400
-    assert response.json['message'] == "Name and description are required!"
+    assert response.json['message'] == "Name and description are required fields"
 
 #5 Test POST for /monsters with duplicate name
 def test_create_duplicate(client, mock_mongo):
@@ -128,7 +128,7 @@ def test_update_monster(client, mock_mongo):
 
 #13 Test PUT for /monsters/<id> for not found
 def test_update_not_found(client, mock_mongo):
-    mock_mongo.db.monsters.update_one.return_value.matched_count = 1
+    mock_mongo.db.monsters.update_one.return_value.matched_count = 0
     response = client.put('/monsters/999', json={
         "name": "Updated Monster",
         "description": "Updated Description",
@@ -139,9 +139,22 @@ def test_update_not_found(client, mock_mongo):
 
 #14 Test PUT for /monsters/<id> with missing fields
 def test_update_missing_field(client, mock_mongo):
+    response = client.put('/monsters/1', json={
+        #"name": "Updated Monster",
+        #"description": "Updated Description",
+        "type": "Updated Type"
+    })
+    assert response.status_code == 400
+    assert response.json['message'] == "Name and description are required fields"
 
 #15 Test PUT for /monsters/<id> with non-integer id
 def test_update_nonInteger(client, mock_mongo):
+    response = client.put('/monsters/a', json={
+        "name": "Updated Monster",
+        "description": "Updated Description",
+        "type": "Updated Type"
+    })
+    assert response.status_code == 404
 
 #16 Test DELETE for /monsters/<id>
 def test_delete_monster(client, mock_mongo):
