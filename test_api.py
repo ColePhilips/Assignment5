@@ -89,11 +89,11 @@ def test_get_monster_by_id(client, mock_mongo):
     assert response.json['name'] == "Monster1"
 
 #8 Test GET for /monsters/<id> for not found
-def Test_get_not_found(client, mock_mongo):
+def test_get_not_found(client, mock_mongo):
     mock_mongo.db.monsters.find_one.return_value = None
     response = client.get('/monsters/999')
     assert response.status_code == 404
-    assert response.json['message'] == "Monster not found!"
+    assert response.json['message'] == "Monster not found"
 
 #9 Test GET for /monsters with no monsters
 def test_get_empty_db(client, mock_mongo):
