@@ -182,3 +182,4 @@ def test_delete_nonInteger(client, mock_mongo):
 
 #20 Test that the app runs without errors
 def test_app_runs(client, mock_mongo):
+    assert client is not None
