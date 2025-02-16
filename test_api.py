@@ -22,8 +22,8 @@ def mock_mongo():
 #1 Test POST for /monsters
 def test_create_monster(client, mock_mongo):
     response = client.post('/monsters', json={
-        "name": "Test Monster"
-        "description": "Test Description"
+        "name": "Test Monster",
+        "description": "Test Description",
         "type": "Test Type"
     })
     assert response.status_code == 200
@@ -32,8 +32,8 @@ def test_create_monster(client, mock_mongo):
 #2 Test POST for /monsters without a name
 def test_create_monster_without_name(client, mock_mongo):
     response = client.post('/monsters', json={
-        #"name": "Test Monster"
-        "description": "Test Description"
+        #"name": "Test Monster",
+        "description": "Test Description",
         "type": "Test Type"
     })
     assert response.status_code == 400
@@ -42,8 +42,8 @@ def test_create_monster_without_name(client, mock_mongo):
 #3 Test POST for /monsters with missing description
 def test_create_missing_description(client, mock_mongo):
     response = client.post('/monsters', json={
-        "name": "Test Monster"
-        #"description": "Test Description"
+        "name": "Test Monster",
+        #"description": "Test Description",
         "type": "Test Type"
     })
     assert response.status_code == 400
@@ -90,7 +90,7 @@ def Test_get_not_found(client, mock_mongo):
     mock_mongo.db.monsters.find_one.return_value = None
     response = client.get('/monsters/999')
     assert response.status_code == 404
-    assert response.json['message'] == "Monster not found"
+    assert response.json['message'] == "Monster not found!"
 
 #9 Test GET for /monsters with no monsters
 def test_get_empty_db(client, mock_mongo):
@@ -117,9 +117,25 @@ def test_get_filter(client, mock_mongo):
 
 #12 Test PUT for /monsters/<id>
 def test_update_monster(client, mock_mongo):
+    mock_mongo.db.monsters.update_one.return_value.matched_count = 1
+    response = client.put('/monsters/1', json={
+        "name": "Updated Monster",
+        "description": "Updated Description",
+        "type": "Updated Type"
+    })
+    assert response.status_code == 200
+    assert response.json['name'] == "Updated Monster"
 
 #13 Test PUT for /monsters/<id> for not found
 def test_update_not_found(client, mock_mongo):
+    mock_mongo.db.monsters.update_one.return_value.matched_count = 1
+    response = client.put('/monsters/999', json={
+        "name": "Updated Monster",
+        "description": "Updated Description",
+        "type": "Updated Type"
+    })
+    assert response.status_code == 404
+    assert response.json['message'] == "Monster not found!"
 
 #14 Test PUT for /monsters/<id> with missing fields
 def test_update_missing_field(client, mock_mongo):
