@@ -20,41 +20,75 @@ def mock_mongo():
         yield mock
 
 #1 Test POST for /monsters
+def test_create_monster(client, mock_mongo):
+    response = client.post('/monsters', json={
+        "name": "Test Monster"
+        "description": "Test Description"
+        "type": "Test Type"
+    })
+    assert response.status_code == 200
+    assert response.json['name'] == "Test Monster"
 
 #2 Test POST for /monsters without a name
+def test_create_monster_without_name(client, mock_mongo):
+    response = client.post('/monsters', json={
+        #"name": "Test Monster"
+        "description": "Test Description"
+        "type": "Test Type"
+    })
+    assert response.status_code == 400
+    assert response.json['message'] == "Name and description are required!"
 
 #3 Test GET for /monsters
+def test_get_all_monsters(client, mock_mongo):
 
 #4 Test GET for /monsters/<id>
+def test_get_monster_by_id(client, mock_mongo):
 
 #5 Test GET for /monsters/<id> for not found
+def Test_get_not_found(client, mock_mongo):
 
 #6 Test PUT for /monsters/<id>
+def test_update_monster(client, mock_mongo):
 
 #7 Test PUT for /monsters/<id> for not found
+def test_update_not_found(client, mock_mongo):
 
 #8 Test DELETE for /monsters/<id>
+def test_delete_monster(client, mock_mongo):
 
 #9 Test DELETE for /monsters/<id> for not found
+def test_delete_not_found(client, mock_mongo):
 
 #10 Test POST for /monsters with missing description
+def test_create_missing_description(client, mock_mongo):
 
 #11 Test GET for /monsters with no monsters
+def test_get_empty_db(client, mock_mongo):
 
 #12 Test PUT for /monsters/<id> with missing fields
+def test_update_missing_field(client, mock_mongo):
 
 #13 Test DELETE for /monsters/<id> with invalid id
+def test_delete_invalid_id(client, mock_mongo):
 
 #14 Test POST for /monsters with invalid data
+def test_create_invalid_id(client, mock_mongo):
 
 #15 Test GET for /monsters/<id> with non-integer id
+def test_get_nonInteger(client, mock_mongo):
 
 #16 Test PUT for /monsters/<id> with non-integer id
+def test_update_nonInteger(client, mock_mongo):
 
 #17 Test DELETE for /monsters/<id> with non-integer id
+def test_delete_nonInteger(client, mock_mongo):
 
 #18 Test POST for /monsters with duplicate name
+def test_create_duplicate(client, mock_mongo):
 
 #19 Test GET for /monsters with specific type filter
+def test_get_filter(client, mock_mongo):
 
 #20 Test that the app runs without errors
+def test_app_runs(client, mock_mongo):
