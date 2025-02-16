@@ -158,15 +158,27 @@ def test_update_nonInteger(client, mock_mongo):
 
 #16 Test DELETE for /monsters/<id>
 def test_delete_monster(client, mock_mongo):
+    mock_mongo.db.monsters.delete_one.return_value.deleted_count = 1
+    response = client.delete('/monsters/1')
+    assert response.status_code == 200
+    assert response.json['message'] == "Monster deleted successfully!"
 
 #17 Test DELETE for /monsters/<id> for not found
 def test_delete_not_found(client, mock_mongo):
+    mock_mongo.db.monsters.delete_one.return_value.deleted_count = 0
+    response = client.delete('/monsters/999')
+    assert response.status_code == 404
+    assert response.json['message'] == "Monster not found!"
 
 #18 Test DELETE for /monsters/<id> with invalid id
 def test_delete_invalid_id(client, mock_mongo):
+    response = client.delete('/monsters/InvalidID')
+    assert response.status_code == 404
 
 #19 Test DELETE for /monsters/<id> with non-integer id
 def test_delete_nonInteger(client, mock_mongo):
+    response = client.delete('/monsters/a')
+    assert response.status_code == 404
 
 #20 Test that the app runs without errors
 def test_app_runs(client, mock_mongo):
