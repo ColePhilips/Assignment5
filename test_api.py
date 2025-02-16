@@ -17,13 +17,16 @@ def client():
 def mock_mongo():
     with patch('api.mongo') as mock:
         mock.db.monsters = MagicMock()
+        # Reset the state of the mock before each test
+        mock.db.monsters.find_one.return_value = None  # Ensure no monster exists by default
+        mock.db.monsters.count_documents.return_value = 0  # Ensure count is 0 by default
         yield mock
 
-#1 Test POST for /monsters
+#1 Test POST /monsters
 def test_create_monster(client, mock_mongo):
     response = client.post('/monsters', json={
         "name": "Test Monster",
-        "description": "Test Description",
+        "description": "A monster for testing",
         "type": "Test Type"
     })
     assert response.status_code == 200
@@ -37,7 +40,7 @@ def test_create_monster_without_name(client, mock_mongo):
         "type": "Test Type"
     })
     assert response.status_code == 400
-    assert response.json['message'] == "Name and description are required fields"
+    assert response.json['message'] == "Name and description are required!"
 
 #3 Test POST for /monsters with missing description
 def test_create_missing_description(client, mock_mongo):
@@ -47,13 +50,13 @@ def test_create_missing_description(client, mock_mongo):
         "type": "Test Type"
     })
     assert response.status_code == 400
-    assert response.json['message'] == "Name and description are required fields"
+    assert response.json['message'] == "Name and description are required!"
 
 #4 Test POST for /monsters with invalid data
 def test_create_invalid_id(client, mock_mongo):
     response = client.post('/monsters', json={})
     assert response.status_code == 400
-    assert response.json['message'] == "Name and description are required fields"
+    assert response.json['message'] == "Name and description are required!"
 
 #5 Test POST for /monsters with duplicate name
 def test_create_duplicate(client, mock_mongo):
@@ -78,9 +81,9 @@ def test_get_all_monsters(client, mock_mongo):
 
 #7 Test GET for /monsters/<id>
 def test_get_monster_by_id(client, mock_mongo):
-    mock_mongo.db.monsters.find_one.return_value = [
-        {"id": 1, "name": "Monster1", "description": "Description1", "type": "Type1"}
-    ]
+    mock_mongo.db.monsters.find_one.return_value = {
+        "id": 1, "name": "Monster1", "description": "Description1", "type": "Type1"
+    }
     response = client.get('/monsters/1')
     assert response.status_code == 200
     assert response.json['name'] == "Monster1"
@@ -107,8 +110,8 @@ def test_get_nonInteger(client, mock_mongo):
 #11 Test GET for /monsters with specific type filter
 def test_get_filter(client, mock_mongo):
     mock_mongo.db.monsters.find.return_value = [
-        {"id": 1, "name": "Monster1", "description": "Description1", "type": "Type1"},
-        {"id": 2, "name": "Monster2", "description": "Description2", "type": "Type2"}
+        {"id": 1, "name": "Monster1", "description": "Description1", "type": "Fire"},
+        {"id": 2, "name": "Monster2", "description": "Description2", "type": "Fire"}
     ]
     response = client.get('/monsters?type=Fire')
     assert response.status_code == 200
