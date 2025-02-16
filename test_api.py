@@ -75,21 +75,45 @@ def test_get_all_monsters(client, mock_mongo):
     response = client.get('/monsters')
     assert response.status_code == 200
     assert len(response.json) == 2
-    
+
 #7 Test GET for /monsters/<id>
 def test_get_monster_by_id(client, mock_mongo):
+    mock_mongo.db.monsters.find_one.return_value = [
+        {"id": 1, "name": "Monster1", "description": "Description1", "type": "Type1"}
+    ]
+    response = client.get('/monsters/1')
+    assert response.status_code == 200
+    assert response.json['name'] == "Monster1"
 
 #8 Test GET for /monsters/<id> for not found
 def Test_get_not_found(client, mock_mongo):
+    mock_mongo.db.monsters.find_one.return_value = None
+    response = client.get('/monsters/999')
+    assert response.status_code == 404
+    assert response.json['message'] == "Monster not found"
 
 #9 Test GET for /monsters with no monsters
 def test_get_empty_db(client, mock_mongo):
+    mock_mongo.db.monsters.find.return_value = []
+    response = client.get('/monsters')
+    assert response.status_code == 200
+    assert response.json == []
 
 #10 Test GET for /monsters/<id> with non-integer id
 def test_get_nonInteger(client, mock_mongo):
+    response = client.get('/monsters/a')
+    assert response.status_code == 404
 
 #11 Test GET for /monsters with specific type filter
 def test_get_filter(client, mock_mongo):
+    mock_mongo.db.monsters.find.return_value = [
+        {"id": 1, "name": "Monster1", "description": "Description1", "type": "Type1"},
+        {"id": 2, "name": "Monster2", "description": "Description2", "type": "Type2"}
+    ]
+    response = client.get('/monsters?type=Fire')
+    assert response.status_code == 200
+    assert len(response.json) == 2
+    assert all(monster['type'] == "Fire" for monster in response.json)
 
 #12 Test PUT for /monsters/<id>
 def test_update_monster(client, mock_mongo):
