@@ -1,5 +1,5 @@
 # Assignment5
-
+The code will now run via going into src directory and typing python api.py and node index.js which will start up the api and then boot up the application project in https://localhost:3000
 # Backend testing
 Run via going into directory src and running pytest test_api.py.
 This will run 20 tests for the backend api in api.py. 
