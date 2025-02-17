@@ -64,7 +64,7 @@ delete a monster with a non integer id which gives 404 error
 ![image](https://github.com/user-attachments/assets/ba3ec65b-141e-4d3e-92dd-982c276067ef)\
 Test to see if the api will run without errors
 
-#Frontend Testing
+# Frontend Testing
 Run via going into directory src and running karma start karma.conf.js.
 This will run 5 tests for the frontend connection in app.js.
 
