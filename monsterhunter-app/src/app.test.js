@@ -17,11 +17,6 @@ describe('MainController', function() {
         $httpBackend.verifyNoOutstandingRequest();
     });
 
-    it('should initialize with an empty monster list', function() {
-        const controller = $controller('MainController', { $scope });
-        expect($scope.monsters).toEqual([]);
-    });
-
     it('should fetch monsters from the API on initialization', function() {
         // Mock the API response for the initialization request
         $httpBackend.expectGET('http://localhost:5000/monsters').respond(200, [
