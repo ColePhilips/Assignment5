@@ -65,7 +65,7 @@ delete a monster with a non integer id which gives 404 error
 Test to see if the api will run without errors
 
 # Frontend Testing
-Run via going into directory src and running karma start karma.conf.js.
+Run via going into directory mosnterhunter-app and running karma start karma.conf.js.
 This will run 5 tests for the frontend connection in app.js.
 
 ![image](https://github.com/user-attachments/assets/e9877565-6c19-43b6-ad2f-2d1828bea3db)\
